@@ -1,0 +1,767 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Portfolio - Pablo Dessables</title>
+  <style>
+    :root {
+      --bg: #050505;
+      --bg-soft: #0c0c0c;
+      --panel: rgba(12, 12, 12, 0.82);
+      --panel-strong: rgba(16, 16, 16, 0.94);
+      --text: #f4f4f4;
+      --muted: #a7a7a7;
+      --line: rgba(255, 255, 255, 0.08);
+      --red: #cf1111;
+      --red-soft: rgba(207, 17, 17, 0.22);
+      --shadow: 0 18px 50px rgba(0, 0, 0, 0.45);
+      --radius: 18px;
+      --radius-sm: 12px;
+      --max: 1180px;
+    }
+
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    html { scroll-behavior: smooth; }
+
+    body {
+      font-family: Inter, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+      color: var(--text);
+      background:
+        radial-gradient(circle at top right, rgba(207, 17, 17, 0.08), transparent 22%),
+        linear-gradient(rgba(255,255,255,0.015) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(255,255,255,0.015) 1px, transparent 1px),
+        repeating-linear-gradient(-55deg, rgba(255,255,255,0.025) 0, rgba(255,255,255,0.025) 2px, transparent 2px, transparent 12px),
+        linear-gradient(180deg, #090909 0%, #030303 100%);
+      background-size: auto, 80px 80px, 80px 80px, auto, auto;
+      line-height: 1.6;
+    }
+
+    body::before {
+      content: "";
+      position: fixed;
+      inset: 0;
+      background:
+        radial-gradient(circle at 15% 20%, rgba(255,255,255,0.03), transparent 18%),
+        radial-gradient(circle at 85% 10%, rgba(207,17,17,0.07), transparent 16%),
+        radial-gradient(circle at 70% 80%, rgba(255,255,255,0.02), transparent 18%);
+      pointer-events: none;
+      z-index: 0;
+    }
+
+    a { color: inherit; text-decoration: none; }
+    img { max-width: 100%; display: block; }
+
+    .container {
+      width: min(calc(100% - 2rem), var(--max));
+      margin: 0 auto;
+      position: relative;
+      z-index: 1;
+    }
+
+    /* ── HEADER ── */
+    .site-header {
+      position: sticky;
+      top: 0;
+      z-index: 50;
+      backdrop-filter: blur(12px);
+      background: rgba(5, 5, 5, 0.8);
+      border-bottom: 1px solid var(--line);
+    }
+
+    .site-header .container {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      min-height: 76px;
+      gap: 1rem;
+    }
+
+    .brand {
+      display: flex;
+      align-items: center;
+      gap: 0.85rem;
+      font-weight: 700;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+    }
+
+    .brand-mark { display: inline-flex; gap: 0.25rem; align-items: center; }
+
+    .brand-mark span {
+      width: 10px;
+      height: 18px;
+      display: inline-block;
+      background: var(--red);
+      border-radius: 2px;
+      transform: skew(-28deg);
+      box-shadow: 0 0 14px rgba(207, 17, 17, 0.4);
+    }
+
+    nav { display: flex; gap: 1.5rem; flex-wrap: wrap; justify-content: center; }
+
+    nav a {
+      color: var(--muted);
+      font-size: 0.95rem;
+      position: relative;
+      transition: color 0.25s ease;
+    }
+
+    nav a::after {
+      content: "";
+      position: absolute;
+      left: 0;
+      bottom: -0.45rem;
+      width: 100%;
+      height: 2px;
+      background: var(--red);
+      transform: scaleX(0);
+      transform-origin: left;
+      transition: transform 0.25s ease;
+    }
+
+    nav a:hover, nav a:focus-visible { color: var(--text); }
+    nav a:hover::after, nav a:focus-visible::after { transform: scaleX(1); }
+
+    nav a.active { color: var(--text); }
+    nav a.active::after { transform: scaleX(1); }
+
+    /* ── HERO ── */
+    .hero {
+      padding: 5.5rem 0 4rem;
+      min-height: calc(100vh - 76px);
+      display: flex;
+      align-items: center;
+    }
+
+    .hero-grid {
+      display: grid;
+      grid-template-columns: 1.2fr 0.8fr;
+      gap: 2.2rem;
+      align-items: center;
+    }
+
+    .eyebrow {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.65rem;
+      color: var(--muted);
+      font-size: 0.9rem;
+      text-transform: uppercase;
+      letter-spacing: 0.18em;
+      margin-bottom: 1.25rem;
+    }
+
+    .eyebrow::before {
+      content: "";
+      width: 42px;
+      height: 2px;
+      background: var(--red);
+      box-shadow: 0 0 14px rgba(207, 17, 17, 0.5);
+    }
+
+    h1 {
+      font-size: clamp(2.8rem, 6vw, 5.6rem);
+      line-height: 0.95;
+      letter-spacing: 0.04em;
+      text-transform: uppercase;
+      margin-bottom: 1rem;
+    }
+
+    .hero h1 span { color: var(--red); }
+
+    .subtitle {
+      font-size: 1.15rem;
+      color: #d0d0d0;
+      max-width: 42rem;
+      margin-bottom: 1.5rem;
+    }
+
+    .lead {
+      color: var(--muted);
+      max-width: 44rem;
+      font-size: 1.02rem;
+      margin-bottom: 2rem;
+    }
+
+    .actions { display: flex; gap: 1rem; flex-wrap: wrap; }
+
+    .btn {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 0.6rem;
+      min-height: 48px;
+      padding: 0 1.35rem;
+      border-radius: 999px;
+      border: 1px solid transparent;
+      font-weight: 600;
+      letter-spacing: 0.02em;
+      transition: transform 0.25s ease, border-color 0.25s ease, background 0.25s ease;
+    }
+
+    .btn:hover { transform: translateY(-2px); }
+
+    .btn-primary {
+      background: linear-gradient(135deg, #b50f0f, #e31818);
+      color: white;
+      box-shadow: 0 12px 24px rgba(207, 17, 17, 0.24);
+    }
+
+    .btn-secondary {
+      border-color: rgba(207, 17, 17, 0.5);
+      background: rgba(255, 255, 255, 0.015);
+      color: var(--text);
+    }
+
+    .hero-panel {
+      background:
+        linear-gradient(180deg, rgba(255,255,255,0.02), rgba(255,255,255,0.01)),
+        repeating-linear-gradient(-55deg, rgba(255,255,255,0.03) 0, rgba(255,255,255,0.03) 2px, transparent 2px, transparent 14px),
+        var(--panel-strong);
+      border: 1px solid rgba(255,255,255,0.08);
+      border-radius: 32px;
+      padding: 2rem;
+      box-shadow: var(--shadow);
+      position: relative;
+      overflow: hidden;
+      min-height: 420px;
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+    }
+
+    .hero-panel::before, .hero-panel::after {
+      content: "";
+      position: absolute;
+      background: linear-gradient(180deg, transparent, var(--red), transparent);
+      opacity: 0.9;
+    }
+
+    .hero-panel::before {
+      top: -10%; right: 24%;
+      width: 2px; height: 65%;
+      transform: rotate(34deg);
+      box-shadow: 0 0 22px rgba(207, 17, 17, 0.45);
+    }
+
+    .hero-panel::after {
+      right: 10%; bottom: -20%;
+      width: 2px; height: 48%;
+      transform: rotate(34deg);
+      box-shadow: 0 0 22px rgba(207, 17, 17, 0.45);
+    }
+
+    .hero-panel .top-note {
+      color: var(--red);
+      text-transform: uppercase;
+      letter-spacing: 0.18em;
+      font-size: 0.82rem;
+    }
+
+    .panel-main { max-width: 18rem; margin-left: auto; text-align: left; }
+
+    .panel-main h2 {
+      font-size: 1.8rem;
+      text-transform: uppercase;
+      margin-bottom: 0.8rem;
+      line-height: 1.1;
+    }
+
+    .panel-main p { color: var(--muted); font-size: 0.96rem; }
+
+    /* ── SECTIONS ── */
+    section { padding: 5rem 0 0; }
+
+    .section-header {
+      display: flex;
+      align-items: end;
+      justify-content: space-between;
+      gap: 1rem;
+      margin-bottom: 1.5rem;
+    }
+
+    .section-header h2 {
+      font-size: clamp(1.7rem, 3vw, 2.4rem);
+      text-transform: uppercase;
+      letter-spacing: 0.04em;
+    }
+
+    .section-header p { color: var(--muted); max-width: 38rem; }
+
+    /* ── SKILLS ── */
+    .skills-grid {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 1rem;
+    }
+
+    .skill {
+      background: var(--panel);
+      border: 1px solid rgba(255,255,255,0.08);
+      border-radius: var(--radius-sm);
+      padding: 1.2rem;
+    }
+
+    .skill-top {
+      display: flex;
+      justify-content: space-between;
+      gap: 1rem;
+      margin-bottom: 0.8rem;
+      align-items: center;
+    }
+
+    .skill-top strong { font-size: 0.96rem; text-transform: uppercase; letter-spacing: 0.03em; }
+    .skill-top span { color: var(--red); font-weight: 600; font-size: 0.9rem; }
+
+    .bar {
+      width: 100%;
+      height: 7px;
+      background: rgba(255,255,255,0.08);
+      border-radius: 999px;
+      overflow: hidden;
+    }
+
+    .bar i {
+      display: block;
+      height: 100%;
+      background: linear-gradient(90deg, #991111, #ff2222);
+      border-radius: inherit;
+      box-shadow: 0 0 14px rgba(207, 17, 17, 0.35);
+    }
+
+    /* ── LANGUAGES ── */
+    .languages-grid {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 1rem;
+      margin-top: 2rem;
+    }
+
+    .lang-card {
+      background: var(--panel);
+      border: 1px solid rgba(255,255,255,0.08);
+      border-radius: var(--radius-sm);
+      padding: 1.2rem 1.3rem;
+      display: flex;
+      align-items: center;
+      gap: 1rem;
+      position: relative;
+      overflow: hidden;
+      transition: border-color 0.25s ease, transform 0.25s ease;
+    }
+
+    .lang-card:hover {
+      border-color: rgba(207,17,17,0.3);
+      transform: translateY(-2px);
+    }
+
+    .lang-flag {
+      font-size: 2rem;
+      line-height: 1;
+      flex-shrink: 0;
+    }
+
+    .lang-info { flex: 1; min-width: 0; }
+
+    .lang-name {
+      font-weight: 700;
+      font-size: 0.95rem;
+      text-transform: uppercase;
+      letter-spacing: 0.04em;
+      margin-bottom: 0.2rem;
+    }
+
+    .lang-label {
+      color: var(--muted);
+      font-size: 0.78rem;
+      text-transform: uppercase;
+      letter-spacing: 0.1em;
+    }
+
+    .lang-badge {
+      flex-shrink: 0;
+      font-size: 1rem;
+      font-weight: 800;
+      color: var(--red);
+      letter-spacing: 0.04em;
+      background: rgba(207,17,17,0.08);
+      border: 1px solid rgba(207,17,17,0.25);
+      border-radius: 8px;
+      padding: 0.25rem 0.55rem;
+      line-height: 1;
+    }
+
+    .lang-card::after {
+      content: "";
+      position: absolute;
+      bottom: 0; left: 0;
+      width: 0%;
+      height: 2px;
+      background: linear-gradient(90deg, var(--red), transparent);
+      transition: width 0.35s ease;
+    }
+
+    .lang-card:hover::after { width: 100%; }
+
+    /* ── ABOUT ── */
+    .about-grid {
+      display: grid;
+      grid-template-columns: 1.1fr 0.9fr;
+      gap: 1.5rem;
+      align-items: stretch;
+    }
+
+    .about-box, .info-box {
+      background: var(--panel);
+      border: 1px solid rgba(255,255,255,0.08);
+      border-radius: var(--radius);
+      padding: 1.6rem;
+      box-shadow: var(--shadow);
+    }
+
+    .about-box p { color: var(--muted); max-width: 52ch; }
+
+    .info-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 1rem;
+      height: 100%;
+    }
+
+    .info-item {
+      background: rgba(255,255,255,0.02);
+      border: 1px solid rgba(255,255,255,0.05);
+      border-radius: 14px;
+      padding: 1rem;
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+      min-height: 150px;
+    }
+
+    .info-item small {
+      color: var(--red);
+      text-transform: uppercase;
+      letter-spacing: 0.12em;
+      font-size: 0.72rem;
+      margin-bottom: 0.8rem;
+    }
+
+    .info-item strong { font-size: 1rem; text-transform: uppercase; line-height: 1.25; }
+    .info-item p { color: var(--muted); font-size: 0.9rem; margin-top: 0.55rem; }
+
+    /* ── CONTACT ── */
+    .contact { padding-bottom: 6rem; }
+
+    .contact-box {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 1.25rem;
+      padding: 1.6rem;
+      border-radius: var(--radius);
+      background:
+        linear-gradient(180deg, rgba(255,255,255,0.02), rgba(255,255,255,0.01)),
+        repeating-linear-gradient(-55deg, rgba(255,255,255,0.018) 0, rgba(255,255,255,0.018) 2px, transparent 2px, transparent 14px),
+        var(--panel-strong);
+      border: 1px solid rgba(255,255,255,0.08);
+      box-shadow: var(--shadow);
+    }
+
+    .contact-box p { color: var(--muted); margin-top: 0.4rem; }
+
+    /* ── SCROLL PROGRESS ── */
+    .scroll-progress-track {
+      position: fixed;
+      top: 100px;
+      right: 22px;
+      width: 56px;
+      height: calc(100vh - 140px);
+      z-index: 120;
+      pointer-events: none;
+      display: flex;
+      justify-content: center;
+      align-items: flex-start;
+    }
+
+    .scroll-progress-track::before {
+      content: "";
+      position: absolute;
+      top: 24px; bottom: 24px;
+      left: 50%;
+      width: 4px;
+      transform: translateX(-50%);
+      border-radius: 999px;
+      background: rgba(255,255,255,0.08);
+      box-shadow: inset 0 0 0 1px rgba(255,255,255,0.04);
+    }
+
+    .scroll-progress-fill {
+      position: absolute;
+      top: 24px;
+      left: 50%;
+      width: 4px;
+      height: 0%;
+      transform: translateX(-50%);
+      transform-origin: top;
+      border-radius: 999px;
+      background: linear-gradient(180deg, #ff4d4d 0%, #cf1111 100%);
+      box-shadow: 0 0 14px rgba(207, 17, 17, 0.35);
+    }
+
+    .progress-car {
+      position: absolute;
+      top: 24px;
+      left: 50%;
+      width: 60px;
+      height: auto;
+      transform: translate(-50%, 0);
+      transform-origin: center;
+      filter: drop-shadow(0 4px 8px rgba(0,0,0,0.3));
+      will-change: transform;
+    }
+
+    /* ── FOOTER ── */
+    .footer {
+      padding: 1.5rem 0 2rem;
+      border-top: 1px solid var(--line);
+      color: var(--muted);
+      font-size: 0.92rem;
+    }
+
+    /* ── RESPONSIVE ── */
+    @media (max-width: 980px) {
+      .scroll-progress-track { right: 12px; width: 42px; }
+      .progress-car { width: 28px; }
+      .hero-grid, .about-grid, .skills-grid, .languages-grid { grid-template-columns: 1fr 1fr; }
+      .info-grid { grid-template-columns: 1fr; }
+      .hero { min-height: auto; padding-top: 4rem; }
+      .hero-panel { min-height: 320px; }
+      .contact-box, .section-header, .site-header .container { flex-direction: column; align-items: flex-start; }
+      nav { gap: 1rem; }
+    }
+
+    @media (max-width: 640px) {
+      .container { width: min(calc(100% - 1.2rem), var(--max)); }
+      .hero { padding: 3rem 0 2rem; }
+      h1 { line-height: 1.02; }
+      .btn { width: 100%; }
+      .languages-grid { grid-template-columns: 1fr; }
+    }
+  </style>
+</head>
+<body>
+  <div class="scroll-progress-track" aria-hidden="true">
+    <div class="scroll-progress-fill"></div>
+    <img id="ferrari-progress-car" class="progress-car" src="ferrari-top-view.png" alt="" aria-hidden="true" />
+  </div>
+
+  <header class="site-header">
+    <div class="container">
+      <a href="index.html" class="brand">
+        <span class="brand-mark" aria-hidden="true"><span></span><span></span><span></span></span>
+        <span>Pablo Dessables</span>
+      </a>
+      <nav>
+        <a href="index.html" class="active">Accueil</a>
+        <a href="projets.html">Projets</a>
+        <a href="index.html#competences">Compétences</a>
+        <a href="index.html#apropos">À propos</a>
+        <a href="index.html#contact">Contact</a>
+      </nav>
+    </div>
+  </header>
+
+  <main>
+    <section class="hero" id="accueil">
+      <div class="container hero-grid">
+        <div>
+          <div class="eyebrow">Portfolio professionnel</div>
+          <h1>Pablo Dessables <span>—</span><br>Étudiant en BUT Science des Données</h1>
+          <p class="subtitle">Curieux par le développement, les algorithmes et la création de projets.</p>
+          <div class="actions">
+            <a class="btn btn-primary" href="projets.html">Découvrir mes projets</a>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section id="competences">
+      <div class="container">
+        <div class="section-header">
+          <div>
+            <div class="eyebrow">Compétences</div>
+            <h2>Outils</h2>
+          </div>
+          <p>Des bases solides qui évoluent en continu à travers ma formation, mes exercices et mes projets personnels.</p>
+        </div>
+
+        <div class="skills-grid">
+          <div class="skill">
+            <div class="skill-top"><strong>Python</strong><span>50%</span></div>
+            <div class="bar"><i style="width: 50%"></i></div>
+          </div>
+          <div class="skill">
+            <div class="skill-top"><strong>SQL</strong><span>30%</span></div>
+            <div class="bar"><i style="width: 30%"></i></div>
+          </div>
+          <div class="skill">
+            <div class="skill-top"><strong>SAS</strong><span>20%</span></div>
+            <div class="bar"><i style="width: 20%"></i></div>
+          </div>
+          <div class="skill">
+            <div class="skill-top"><strong>R</strong><span>15%</span></div>
+            <div class="bar"><i style="width: 15%"></i></div>
+          </div>
+        </div>
+
+        <!-- ── LANGUES ── -->
+        <div class="section-header" style="margin-top: 3rem; margin-bottom: 0;">
+          <div>
+            <h2>Langues</h2>
+          </div>
+          <p>Les langues dans lesquelles je peux lire, écrire et m'exprimer.</p>
+        </div>
+
+        <div class="languages-grid">
+          <div class="lang-card">
+            <span class="lang-flag">FR</span>
+            <div class="lang-info">
+              <div class="lang-name">Français</div>
+              <div class="lang-label">Langue maternelle</div>
+            </div>
+            <span class="lang-badge">C2</span>
+          </div>
+
+          <div class="lang-card">
+            <span class="lang-flag">EN</span>
+            <div class="lang-info">
+              <div class="lang-name">Anglais</div>
+              <div class="lang-label">Intermédiaire</div>
+            </div>
+            <span class="lang-badge">B2</span>
+          </div>
+
+          <div class="lang-card">
+            <span class="lang-flag">ES</span>
+            <div class="lang-info">
+              <div class="lang-name">Espagnol</div>
+              <div class="lang-label">Notions</div>
+            </div>
+            <span class="lang-badge">A2</span>
+          </div>
+
+          <div class="lang-card">
+            <span class="lang-flag">CH</span>
+            <div class="lang-info">
+              <div class="lang-name">Chinois</div>
+              <div class="lang-label">Notions</div>
+            </div>
+            <span class="lang-badge">A2</span>
+          </div>
+
+        </div>
+
+      </div>
+    </section>
+
+    <section id="apropos">
+      <div class="container">
+        <div class="section-header">
+          <div>
+            <div class="eyebrow">À propos</div>
+            <h2>Qui suis-je ?</h2>
+          </div>
+          <p>Un profil en construction, motivé par l'envie d'apprendre, de progresser et de concevoir des projets utiles.</p>
+        </div>
+
+        <div class="about-grid">
+          <div class="about-box">
+            <p>Je suis étudiant en BUT Science des données et je suis curieux dans la façon dont fonctionne des programmes, des systèmes et de résoudre des problèmes concrets.</p>
+            <p>Ancien élève en NSI j'ai découvert en première le codage et la data qui m'ont directement intrigués et intéressés</p>
+          </div>
+
+          <div class="info-box">
+            <div class="info-grid">
+              <div class="info-item">
+                <div>
+                  <small>Âge</small>
+                  <strong>19 ans</strong>
+                </div>
+                <p>1ere année de BUT, avec une forte envie d'apprendre.</p>
+              </div>
+              <div class="info-item">
+                <div>
+                  <small>Formation</small>
+                  <strong>Science des données</strong>
+                </div>
+                <p>Data, Code, Visualisation.</p>
+              </div>
+              <div class="info-item">
+                <div>
+                  <small>Objectif</small>
+                  <strong>Progresser</strong>
+                </div>
+                <p>Apprendre et comprendre de nouvelles choses.</p>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section class="contact" id="contact">
+      <div class="container">
+        <div class="section-header">
+          <div>
+            <div class="eyebrow">Contact</div>
+            <h2>Me contacter</h2>
+          </div>
+        </div>
+
+        <div class="contact-box">
+          <div>
+            <h3>Disponible pour échanger</h3>
+          </div>
+          <a class="btn btn-primary" href="https://www.linkedin.com/in/pablo-dessables-1205b43b1">Mon Linkedin</a>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <footer class="footer">
+    <div class="container">
+      <p>© 2026 Pablo Dessables — Portfolio personnel</p>
+    </div>
+  </footer>
+
+  <script>
+    (() => {
+      const car = document.getElementById('ferrari-progress-car');
+      const fill = document.querySelector('.scroll-progress-fill');
+      const track = document.querySelector('.scroll-progress-track');
+
+      function updateProgress() {
+        const scrollTop = window.scrollY;
+        const maxScroll = document.documentElement.scrollHeight - window.innerHeight;
+        const progress = maxScroll > 0 ? scrollTop / maxScroll : 0;
+
+        const trackHeight = track.clientHeight;
+        const topOffset = 24, bottomOffset = 24;
+        const usableHeight = trackHeight - topOffset - bottomOffset;
+        const carHeight = car.offsetHeight || 40;
+        const maxTravel = Math.max(usableHeight - carHeight, 0);
+        const carY = topOffset + progress * maxTravel;
+
+        car.style.transform = `translate(-50%, ${carY}px) rotate(90deg)`;
+        fill.style.height = `${progress * usableHeight}px`;
+      }
+
+      window.addEventListener('scroll', updateProgress, { passive: true });
+      window.addEventListener('resize', updateProgress);
+      window.addEventListener('load', updateProgress);
+    })();
+  </script>
+</body>
+</html>

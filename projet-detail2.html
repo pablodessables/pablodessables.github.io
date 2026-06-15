@@ -1,0 +1,547 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Mise en oeuvre d'une enquête — Pablo Dessables</title>
+  <style>
+    :root {
+      --bg: #050505;
+      --panel: rgba(12, 12, 12, 0.82);
+      --panel-strong: rgba(16, 16, 16, 0.94);
+      --text: #f4f4f4;
+      --muted: #a7a7a7;
+      --line: rgba(255, 255, 255, 0.08);
+      --red: #cf1111;
+      --shadow: 0 18px 50px rgba(0, 0, 0, 0.45);
+      --radius: 18px;
+      --max: 900px;
+    }
+
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    html { scroll-behavior: smooth; }
+
+    body {
+      font-family: Inter, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+      color: var(--text);
+      background:
+        radial-gradient(circle at top right, rgba(207, 17, 17, 0.08), transparent 22%),
+        linear-gradient(rgba(255,255,255,0.015) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(255,255,255,0.015) 1px, transparent 1px),
+        repeating-linear-gradient(-55deg, rgba(255,255,255,0.025) 0, rgba(255,255,255,0.025) 2px, transparent 2px, transparent 12px),
+        linear-gradient(180deg, #090909 0%, #030303 100%);
+      background-size: auto, 80px 80px, 80px 80px, auto, auto;
+      line-height: 1.6;
+      min-height: 100vh;
+    }
+
+    body::before {
+      content: "";
+      position: fixed;
+      inset: 0;
+      background:
+        radial-gradient(circle at 15% 20%, rgba(255,255,255,0.03), transparent 18%),
+        radial-gradient(circle at 85% 10%, rgba(207,17,17,0.07), transparent 16%);
+      pointer-events: none;
+      z-index: 0;
+    }
+
+    a { color: inherit; text-decoration: none; }
+    img { max-width: 100%; display: block; }
+
+    .container {
+      width: min(calc(100% - 2rem), var(--max));
+      margin: 0 auto;
+      position: relative;
+      z-index: 1;
+    }
+
+    /* ── HEADER ── */
+    .site-header {
+      position: sticky;
+      top: 0;
+      z-index: 50;
+      backdrop-filter: blur(12px);
+      background: rgba(5, 5, 5, 0.8);
+      border-bottom: 1px solid var(--line);
+    }
+
+    .site-header .container {
+      max-width: 1180px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      min-height: 76px;
+      gap: 1rem;
+    }
+
+    .brand {
+      display: flex;
+      align-items: center;
+      gap: 0.85rem;
+      font-weight: 700;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+    }
+
+    .brand-mark { display: inline-flex; gap: 0.25rem; align-items: center; }
+
+    .brand-mark span {
+      width: 10px; height: 18px;
+      display: inline-block;
+      background: var(--red);
+      border-radius: 2px;
+      transform: skew(-28deg);
+      box-shadow: 0 0 14px rgba(207, 17, 17, 0.4);
+    }
+
+    nav { display: flex; gap: 1.5rem; flex-wrap: wrap; justify-content: center; }
+
+    nav a {
+      color: var(--muted);
+      font-size: 0.95rem;
+      position: relative;
+      transition: color 0.25s ease;
+    }
+
+    nav a::after {
+      content: "";
+      position: absolute;
+      left: 0; bottom: -0.45rem;
+      width: 100%; height: 2px;
+      background: var(--red);
+      transform: scaleX(0);
+      transform-origin: left;
+      transition: transform 0.25s ease;
+    }
+
+    nav a:hover, nav a:focus-visible { color: var(--text); }
+    nav a:hover::after, nav a:focus-visible::after { transform: scaleX(1); }
+
+    /* ── BACK LINK ── */
+    .back-link {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.5rem;
+      color: var(--muted);
+      font-size: 0.9rem;
+      padding: 3rem 0 1.5rem;
+      transition: color 0.2s ease;
+    }
+
+    .back-link:hover { color: var(--text); }
+
+    .back-link svg { width: 16px; height: 16px; }
+
+    /* ── PROJECT HERO ── */
+    .project-hero { padding-bottom: 2.5rem; }
+
+    .project-meta-top {
+      display: flex;
+      align-items: center;
+      gap: 0.8rem;
+      margin-bottom: 1.2rem;
+      flex-wrap: wrap;
+    }
+
+    .eyebrow {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.65rem;
+      color: var(--muted);
+      font-size: 0.85rem;
+      text-transform: uppercase;
+      letter-spacing: 0.18em;
+    }
+
+    .eyebrow::before {
+      content: "";
+      width: 32px; height: 2px;
+      background: var(--red);
+      box-shadow: 0 0 14px rgba(207, 17, 17, 0.5);
+    }
+
+    .badge {
+      font-size: 0.78rem;
+      padding: 0.25rem 0.7rem;
+      border-radius: 999px;
+      border: 1px solid rgba(255,255,255,0.08);
+      color: var(--muted);
+      background: rgba(255,255,255,0.03);
+    }
+
+    .badge.done { border-color: rgba(50,200,100,0.3); color: #5de89a; background: rgba(50,200,100,0.05); }
+    .badge.wip { border-color: rgba(207,17,17,0.35); color: #ff6060; background: rgba(207,17,17,0.05); }
+
+    .project-hero h1 {
+      font-size: clamp(2rem, 5vw, 3.8rem);
+      line-height: 0.98;
+      letter-spacing: 0.04em;
+      text-transform: uppercase;
+      margin-bottom: 1rem;
+    }
+
+    .project-hero h1 span { color: var(--red); }
+
+    .project-intro {
+      font-size: 1.1rem;
+      color: #d0d0d0;
+      max-width: 56ch;
+      margin-bottom: 1.5rem;
+    }
+
+    /* Tags + links row */
+    .project-top-row {
+      display: flex;
+      align-items: center;
+      gap: 1.2rem;
+      flex-wrap: wrap;
+    }
+
+    .tags { display: flex; gap: 0.45rem; flex-wrap: wrap; }
+
+    .tag {
+      border: 1px solid rgba(255,255,255,0.08);
+      color: #d7d7d7;
+      background: rgba(255,255,255,0.03);
+      border-radius: 999px;
+      padding: 0.28rem 0.65rem;
+      font-size: 0.8rem;
+    }
+
+    .project-links {
+      display: flex;
+      gap: 0.75rem;
+      flex-wrap: wrap;
+      margin-left: auto;
+    }
+
+    .btn {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.55rem;
+      min-height: 40px;
+      padding: 0 1.1rem;
+      border-radius: 999px;
+      border: 1px solid transparent;
+      font-weight: 600;
+      font-size: 0.88rem;
+      letter-spacing: 0.02em;
+      transition: transform 0.22s ease, border-color 0.22s ease, background 0.22s ease;
+    }
+
+    .btn:hover { transform: translateY(-2px); }
+
+    .btn-primary {
+      background: linear-gradient(135deg, #b50f0f, #e31818);
+      color: white;
+      box-shadow: 0 10px 20px rgba(207,17,17,0.22);
+    }
+
+    .btn-outline {
+      border-color: rgba(255,255,255,0.15);
+      background: rgba(255,255,255,0.03);
+      color: var(--text);
+    }
+
+    .btn svg { width: 15px; height: 15px; }
+
+    /* ── MAIN IMAGE ── */
+    .main-image {
+      width: 100%;
+      aspect-ratio: 16 / 9;
+      border-radius: var(--radius);
+      overflow: hidden;
+      border: 1px solid rgba(255,255,255,0.08);
+      box-shadow: var(--shadow);
+      margin-bottom: 3rem;
+      background:
+        repeating-linear-gradient(-55deg, rgba(255,255,255,0.018) 0, rgba(255,255,255,0.018) 2px, transparent 2px, transparent 14px),
+        rgba(255,255,255,0.02);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: var(--muted);
+      font-size: 0.95rem;
+      flex-direction: column;
+      gap: 0.6rem;
+    }
+
+    .main-image img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+    }
+
+    .main-image .placeholder-icon {
+      font-size: 2.5rem;
+      opacity: 0.3;
+    }
+
+    /* ── CONTENT ── */
+    .project-content {
+      display: grid;
+      grid-template-columns: 1fr 260px;
+      gap: 3rem;
+      align-items: start;
+      padding-bottom: 6rem;
+    }
+
+    /* Prose */
+    .prose h2 {
+      font-size: 1.3rem;
+      text-transform: uppercase;
+      letter-spacing: 0.04em;
+      margin-bottom: 0.75rem;
+      margin-top: 2.5rem;
+      display: flex;
+      align-items: center;
+      gap: 0.6rem;
+    }
+
+    .prose h2::before {
+      content: "";
+      width: 24px; height: 2px;
+      background: var(--red);
+      flex-shrink: 0;
+    }
+
+    .prose h2:first-child { margin-top: 0; }
+
+    .prose p {
+      color: var(--muted);
+      margin-bottom: 1rem;
+      font-size: 0.98rem;
+    }
+
+    .prose ul {
+      list-style: none;
+      margin-bottom: 1rem;
+    }
+
+    .prose ul li {
+      color: var(--muted);
+      font-size: 0.98rem;
+      padding-left: 1.4rem;
+      position: relative;
+      margin-bottom: 0.5rem;
+    }
+
+    .prose ul li::before {
+      content: "—";
+      position: absolute;
+      left: 0;
+      color: var(--red);
+    }
+
+    /* Gallery */
+    .gallery {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 0.85rem;
+      margin: 1.5rem 0;
+    }
+
+    .gallery-item {
+      aspect-ratio: 4 / 3;
+      border-radius: 12px;
+      overflow: hidden;
+      border: 1px solid rgba(255,255,255,0.08);
+      background:
+        repeating-linear-gradient(-55deg, rgba(255,255,255,0.018) 0, rgba(255,255,255,0.018) 2px, transparent 2px, transparent 14px),
+        rgba(255,255,255,0.02);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: var(--muted);
+      font-size: 0.82rem;
+    }
+
+    .gallery-item img { width: 100%; height: 100%; object-fit: cover; }
+
+    /* Sidebar */
+    .sidebar { position: sticky; top: 96px; }
+
+    .sidebar-card {
+      background: var(--panel);
+      border: 1px solid rgba(255,255,255,0.08);
+      border-radius: var(--radius);
+      padding: 1.4rem;
+      box-shadow: var(--shadow);
+      margin-bottom: 1rem;
+    }
+
+    .sidebar-card h3 {
+      font-size: 0.8rem;
+      text-transform: uppercase;
+      letter-spacing: 0.12em;
+      color: var(--red);
+      margin-bottom: 1rem;
+    }
+
+    .meta-row {
+      display: flex;
+      flex-direction: column;
+      gap: 0.8rem;
+    }
+
+    .meta-item small {
+      display: block;
+      color: var(--muted);
+      font-size: 0.75rem;
+      text-transform: uppercase;
+      letter-spacing: 0.1em;
+      margin-bottom: 0.2rem;
+    }
+
+    .meta-item strong {
+      font-size: 0.94rem;
+    }
+
+    /* ── FOOTER ── */
+    .footer {
+      padding: 1.5rem 0 2rem;
+      border-top: 1px solid var(--line);
+      color: var(--muted);
+      font-size: 0.92rem;
+    }
+
+    /* ── RESPONSIVE ── */
+    @media (max-width: 780px) {
+      .project-content { grid-template-columns: 1fr; }
+      .sidebar { position: static; }
+      .gallery { grid-template-columns: 1fr; }
+      .project-links { margin-left: 0; }
+      .site-header .container { max-width: 100%; flex-direction: column; align-items: flex-start; }
+      nav { gap: 1rem; }
+    }
+
+    @media (max-width: 640px) {
+      .container { width: min(calc(100% - 1.2rem), var(--max)); }
+    }
+  </style>
+</head>
+<body>
+
+  <header class="site-header">
+    <div class="container" style="max-width:1180px">
+      <a href="index.html" class="brand">
+        <span class="brand-mark" aria-hidden="true"><span></span><span></span><span></span></span>
+        <span>Pablo Dessables</span>
+      </a>
+      <nav>
+        <a href="index.html">Accueil</a>
+        <a href="projets.html">Projets</a>
+        <a href="index.html#competences">Compétences</a>
+        <a href="index.html#apropos">À propos</a>
+        <a href="index.html#contact">Contact</a>
+      </nav>
+    </div>
+  </header>
+
+  <main>
+    <div class="container">
+
+      <a href="projets.html" class="back-link">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M19 12H5M12 19l-7-7 7-7"/></svg>
+        Retour aux projets
+      </a>
+
+      <!-- ── EN-TÊTE DU PROJET ── -->
+      <div class="project-hero">
+        <div class="project-meta-top">
+          <div class="eyebrow">Projet</div>
+          <!-- Change "done" en "wip" si en cours -->
+          <span class="badge done">Terminé</span>
+        </div>
+
+        <!-- TITRE : remplace "Nom du projet" et garde le "—" rouge si tu veux -->
+        <h1>SAÉ - Mise en oeuvre d'une enquête <span>—</span></h1>
+
+        <!-- Une phrase d'accroche, 1-2 lignes max -->
+        <p class="project-intro">Conception et création d'une enquête sur les réseaux sociaux et le comportement des jeunes.</p>
+
+        <div class="project-top-row">
+          <div class="tags">
+            <span class="tag">Sphinx</span>
+          </div>
+        </div>
+      </div>
+
+      <div class="main-image">
+        <img src="sphinx.png" alt="Aperçu de Nom du projet">
+      </div>
+
+
+      <!-- ── CONTENU + SIDEBAR ── -->
+      <div class="project-content">
+
+        <!-- Colonne principale -->
+        <article class="prose">
+
+          <h2>Présentation</h2>
+          <p>
+            L'objectif du projet est de nous apprendre à créer une enquête à partir d'un sujet afin de toucher les bonnes personnes et d'obtenir des réponses pertinentes à l'exploitation.
+          </p>
+
+          <h2>Fonctionnalités</h2>
+          <ul>
+            <li>Questionner les personnes ciblées</li>
+            <li>Obtenir des résultats aux questions</li>
+            <li>Pouvoir interpréter ces résultats</li>
+          </ul>
+
+          <h2>Ce que j'ai appris ou renforcer</h2>
+          <ul>
+            <li>Création des questions pertinentes</li>
+            <li>Utilisation de Sphinx</li>
+            <li>Travail d'équipe</li>
+          </ul>
+
+        </article>
+
+        <!-- Sidebar -->
+        <aside class="sidebar">
+          <div class="sidebar-card">
+            <h3>Infos projet</h3>
+            <div class="meta-row">
+              <div class="meta-item">
+                <small>Année</small>
+                <strong>Fin 2025</strong>
+              </div>
+              <div class="meta-item">
+                <small>Durée</small>
+                <strong>2 jours</strong>
+              </div>
+              <div class="meta-item">
+                <small>Contexte</small>
+                <strong>Projet universitaire</strong>
+              </div>
+              <div class="meta-item">
+                <small>Statut</small>
+                <strong>Terminé</strong>
+              </div>
+            </div>
+          </div>
+
+          <div class="sidebar-card">
+            <h3>Outils</h3>
+            <div class="tags" style="flex-direction:column; gap:0.5rem;">
+              <span class="tag">Sphinx</span>
+              <!-- Ajoute autant de tags que nécessaire -->
+            </div>
+          </div>
+        </aside>
+
+      </div>
+    </div>
+  </main>
+
+  <footer class="footer">
+    <div class="container" style="max-width:1180px">
+      <p>© 2026 Pablo Dessables</p>
+    </div>
+  </footer>
+
+</body>
+</html>
